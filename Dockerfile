@@ -7,9 +7,11 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
+# Grant execution permissions to the mvnw script
+RUN chmod +x ./mvnw
+
 # Compile and package the application
 RUN ./mvnw clean package
 
 # Run the application
-CMD ["java", "-jar", "target/littleLight-0.0.1-SNAPSHOT.jar"]
-
+CMD ["java", "-jar", "target/your-app-name.jar"]
