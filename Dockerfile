@@ -4,14 +4,8 @@ FROM openjdk:17-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-
-# Grant execution permissions to the mvnw script
-RUN chmod +x ./mvnw
-
-# Compile and package the application
-RUN ./mvnw clean package
+# Copy the pre-built JAR file from the local machine to the container
+COPY target/littleLight-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # Run the application
-CMD ["java", "-jar", "target/your-app-name.jar"]
+CMD ["java", "-jar", "/app/app.jar"]
