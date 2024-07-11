@@ -1,0 +1,35 @@
+image: maven:3.6.3-jdk-11
+
+stages:
+  - build
+  - deploy
+
+variables:
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version --update-snapshots"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  HEROKU_API_KEY: "HRKU-bdedbf62-53ea-4761-b631-b6e655664860"
+  HEROKU_APP_NAME: "<your-heroku-app-name>"
+
+cache:
+  paths:
+    - .m2/repository
+
+build:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS clean package
+  artifacts:
+    paths:
+      - target/*.jar
+
+deploy:
+  stage: deploy
+  script:
+    - apt-get update && apt-get install -y curl
+    - curl https://cli-assets.heroku.com/install.sh | sh
+    - echo $HEROKU_API_KEY | heroku auth:token
+    - heroku create $HEROKU_APP_NAME || true
+    - heroku plugins:install java
+    - heroku deploy:jar target/*.jar --app $HEROKU_APP_NAME
+  only:
+    - main
