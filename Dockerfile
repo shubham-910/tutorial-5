@@ -1,14 +1,15 @@
 # Use an official Java runtime as a parent image
-FROM openjdk:11-jre-slim
+FROM openjdk:17-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the JAR file into the container at /app
-COPY target/littleLight-0.0.1-SNAPSHOT.jar app.jar
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Compile and package the application
+RUN ./mvnw clean package
 
-# Run the JAR file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the application
+CMD ["java", "-jar", "target/littleLight-0.0.1-SNAPSHOT.jar"]
+
